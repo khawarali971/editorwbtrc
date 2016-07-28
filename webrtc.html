@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>webrtc</title>
+    <meta http-equiv="content-type" content="text/html" charset="utf-8">
+    <script type="javascript" src="http://cdn.peerjs.com/0.3/peer.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        //var Peer = require('peer)
+        var conn;
+        var peer = new Peer({
+            key: 'kik93uxbdd5kx1or'
+        });
+        peer.on('open', function(id) {
+            $('#pid').text(id)
+        });
+        peer.on('connection', connect);
+
+        function connect(c) {
+            $('#rid').val(conn.peer);
+            $('#rid').prop('disabled', true)
+            $('#progBar').width('100%')
+            conn.on('data', function(data) {
+                $('#inputText').val($('#inputText').val() + data)
+            })
+        }
+        $(document).ready(function() {
+            $('connect').click(function) {
+                $('#progBar').width('50%')
+                var c = peer.connect($('#rid').val());
+                c.on('open', function() {
+                    connect(c)
+                })
+            })
+        });
+        $('#inputText').keypress(function(e) {
+            var ev = e || window.event;
+            var asciikey = ev.keyCode || ev.which;
+            text = String.fromCharCode(asciikey);
+            conn.send(textKey);
+        })
+    </script>
+
+    <script src="index.js" charset="utf-8"></script>
+    <h2 style="margin-left: 30%;"> Live Editor with Webrtc</h2> your peer id is : <span id="pid"></span><br><br> Connect to peer: <input type="text" id="rid" placeholder="Someone else's id">
+    <input type="button" value="Connect" id="connect">
+    <input type="button" value="Disonnect" id="disconnect">
+    <div class="progress progress-striped active" style="width: 25%;">
+        <div class="bar" id="proBar" style="width: 0%;">
+        </div>
+    </div>
+    <textarea rows="30" style="width: 45%; margin-left: 20%;" id="inputText"></textarea>
+</body>
+</html>
